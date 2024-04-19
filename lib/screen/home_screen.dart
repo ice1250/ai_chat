@@ -1,4 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../repository/chat_repository.dart';
 
@@ -28,6 +33,7 @@ class ChatMessage {
 class _HomeScreenState extends State<HomeScreen> {
   final messageController = TextEditingController();
   final ChatRepository chatRepository = ChatRepository();
+  final AudioPlayer audioPlayer = AudioPlayer();
 
   List<ChatMessage> chatMessages = [];
 
@@ -86,6 +92,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // 사용자 이미지 표시
                                 const SizedBox(width: 10),
                                 Text(chatMessage.userName),
+                                const Spacer(), // Add this
+                                IconButton(
+                                  // Add this
+                                  icon: const Icon(Icons.headphones),
+                                  onPressed: () async {
+                                    Uint8List audioData =
+                                        await chatRepository.audio(
+                                      message: chatMessage.message,
+                                    );
+                                    final tempDir =
+                                        await getTemporaryDirectory();
+                                    final file =
+                                        File('${tempDir.path}/audio.mp3');
+                                    await file.writeAsBytes(audioData,
+                                        flush: true);
+                                    await audioPlayer
+                                        .play(DeviceFileSource(file.path));
+                                  },
+                                ),
                               ],
                             ),
                             Padding(
