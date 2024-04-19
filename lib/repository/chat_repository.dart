@@ -26,4 +26,23 @@ class ChatRepository {
     );
     return resp.data;
   }
+
+  Future<String> translate({
+    required String message,
+  }) async {
+    Map<String, dynamic>? param = {
+      "user": dotenv.get('PARAM_USER'),
+      "message": message,
+    };
+    final resp = await _dio.post(
+      dotenv.get('URL_TRANSLATE'),
+      options: Options(
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      ),
+      data: param,
+    );
+    return resp.data;
+  }
 }
