@@ -1,11 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ChatRepository {
   final _dio = Dio();
+
+  ChatRepository() {
+    _dio.interceptors.add(LogInterceptor(
+      requestBody: true,
+      responseBody: true,
+    ));
+  }
 
   Future<String> sendMessage({
     required String message,
@@ -25,7 +35,6 @@ class ChatRepository {
       ),
       data: param,
     );
-    print('로그가 안들어옴..');
     return resp.data;
   }
 
@@ -51,7 +60,6 @@ class ChatRepository {
   Future<Uint8List> audio({
     required String message,
   }) async {
-    print('audio 1');
     Map<String, dynamic>? param = {
       "model": "tts-1",
       "voice": "alloy",
@@ -68,7 +76,35 @@ class ChatRepository {
       ),
       data: param,
     );
-    print('audio 2');
     return resp.data;
+  }
+
+  Future<String> transcriptions({
+    required String audioPath,
+  }) async {
+    final audioBytes = await File(audioPath).readAsBytes();
+    final audioMultipartFile = MultipartFile.fromBytes(
+      audioBytes.buffer.asUint8List(),
+      filename: audioPath.split('/').last, // Use the file name from the path
+      contentType:
+          MediaType('audio', 'wav'), // Use the correct MIME type for your file
+    );
+    FormData formData = FormData.fromMap({
+      "file": audioMultipartFile,
+      "model": "whisper-1",
+      "language": "en",
+    });
+    final resp = await _dio.post(
+      dotenv.get('URL_TRANSCRIPTIONS'),
+      options: Options(
+        headers: {
+          'Authorization': 'Bearer ${dotenv.get('OPEN_API_KEY')}',
+          'Content-Type': 'multipart/form-data',
+        },
+        contentType: 'multipart/form-data',
+      ),
+      data: formData,
+    );
+    return resp.data['text'];
   }
 }

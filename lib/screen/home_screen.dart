@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:ai_chat/screen/speak_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -36,6 +37,41 @@ class _HomeScreenState extends State<HomeScreen> {
   final AudioPlayer audioPlayer = AudioPlayer();
 
   List<ChatMessage> chatMessages = [];
+
+  bool isTextFieldEmpty = true;
+
+  @override
+  void initState() {
+    super.initState();
+    messageController.addListener(() {
+      setState(() {
+        isTextFieldEmpty = messageController.text.isEmpty;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    messageController.dispose();
+    super.dispose();
+  }
+
+  Future<void> getAIResponse(String message) async {
+    String aiResponse = await chatRepository.sendMessage(
+      message: message,
+    );
+
+    setState(() {
+      chatMessages.add(
+        ChatMessage(
+          userImage:
+              'https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250',
+          userName: 'AI',
+          message: aiResponse,
+        ),
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -158,7 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 margin: const EdgeInsets.all(20),
                 child: Row(
-                  // Row 위젯 추가
                   children: [
                     Expanded(
                       child: SizedBox(
@@ -182,41 +217,86 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     SizedBox(
                       height: 50,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (messageController.text.isNotEmpty) {
-                            String message = messageController.text;
+                      child: isTextFieldEmpty
+                          ? IconButton(
+                              onPressed: () async {
+                                final result = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SpeakScreen()),
+                                );
+                                if (result is String && result.isNotEmpty) {
+                                  final audioPath = result;
+                                  final transcription = await chatRepository
+                                      .transcriptions(audioPath: audioPath);
+                                  setState(() {
+                                    chatMessages.add(
+                                      ChatMessage(
+                                        userImage:
+                                            'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
+                                        userName: 'You',
+                                        message: transcription,
+                                      ),
+                                    );
+                                  });
 
-                            setState(() {
-                              chatMessages.add(
-                                ChatMessage(
-                                  userImage:
-                                      'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
-                                  userName: 'You',
-                                  message: message,
-                                ),
-                              );
-                              messageController.clear();
-                            });
+                                  String aiResponse =
+                                      await chatRepository.sendMessage(
+                                    message: transcription,
+                                  );
 
-                            String chatGptMessage =
-                                await chatRepository.sendMessage(
-                              message: message,
-                            );
-                            setState(() {
-                              chatMessages.add(
-                                ChatMessage(
-                                  userImage:
-                                      'https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250',
-                                  userName: 'AI',
-                                  message: chatGptMessage,
-                                ),
-                              );
-                            });
-                          }
-                        },
-                        child: const Text('전송'),
-                      ),
+                                  setState(() {
+                                    chatMessages.add(
+                                      ChatMessage(
+                                        userImage:
+                                            'https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250',
+                                        userName: 'AI',
+                                        message: aiResponse,
+                                      ),
+                                    );
+                                  });
+                                }
+                              },
+                              icon: const Icon(
+                                Icons.mic,
+                              ),
+                            )
+                          : ElevatedButton(
+                              onPressed: () async {
+                                if (messageController.text.isNotEmpty) {
+                                  String message = messageController.text;
+
+                                  setState(() {
+                                    chatMessages.add(
+                                      ChatMessage(
+                                        userImage:
+                                            'https://www.gravatar.com/avatar/2c7d99fe281ecd3bcd65ab915bac6dd5?s=250',
+                                        userName: 'You',
+                                        message: message,
+                                      ),
+                                    );
+                                    messageController.clear();
+                                  });
+
+                                  String chatGptMessage =
+                                      await chatRepository.sendMessage(
+                                    message: message,
+                                  );
+                                  setState(() {
+                                    chatMessages.add(
+                                      ChatMessage(
+                                        userImage:
+                                            'https://gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=250',
+                                        userName: 'AI',
+                                        message: chatGptMessage,
+                                      ),
+                                    );
+                                  });
+                                }
+                              },
+                              child: const Text('전송'),
+                            ),
                     ),
                   ],
                 ),
