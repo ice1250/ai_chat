@@ -1,7 +1,6 @@
+import 'package:ai_chat/voca/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'screen/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -9,7 +8,8 @@ void main() async {
 
   runApp(
     const MaterialApp(
-      home: HomeScreen(),
+      // home: HomeScreen(),
+      home: SplashScreen(),
     ),
   );
 }
