@@ -1,5 +1,6 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -10,19 +11,34 @@ class SpeakScreen extends StatefulWidget {
   State<SpeakScreen> createState() => _SpeakScreenState();
 }
 
-class _SpeakScreenState extends State<SpeakScreen> {
-  late FlutterSoundRecorder? _recorder;
+class _SpeakScreenState extends State<SpeakScreen>
+    with SingleTickerProviderStateMixin {
   bool _isRecording = false;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _recorder = FlutterSoundRecorder();
     _initRecorder();
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    _animation =
+        Tween<double>(begin: 50, end: 100).animate(_animationController)
+          ..addListener(() {
+            setState(() {});
+          });
+
+    _animationController.repeat(reverse: true);
   }
 
   Future<void> _initRecorder() async {
-    await _recorder!.openRecorder();
+    // await _recorder.openRecorder();
+    _startRecording();
   }
 
   Future<void> _startRecording() async {
@@ -32,40 +48,42 @@ class _SpeakScreenState extends State<SpeakScreen> {
     }
 
     if (status.isGranted) {
-      if (await _recorder!.isEncoderSupported(Codec.pcm16WAV)) {
-        final tempDir = await getTemporaryDirectory();
-        final audioPath = '${tempDir.path}/my_voice_recording.wav';
-
-        await _recorder!.startRecorder(
-          toFile: audioPath,
-          codec: Codec.pcm16WAV,
-        );
-        setState(() {
-          _isRecording = true;
-        });
-      } else {
-        print('지원하지 않는 포맷?');
-      }
+      // if (await _recorder!.isEncoderSupported(Codec.pcm16WAV)) {
+      //   final tempDir = await getTemporaryDirectory();
+      //   final audioPath = '${tempDir.path}/my_voice_recording.wav';
+      //
+      //   await _recorder.startRecorder(
+      //     toFile: audioPath,
+      //     codec: Codec.pcm16WAV,
+      //   );
+      //   setState(() {
+      //     _isRecording = true;
+      //   });
+      //   _animationController.forward();
+      // } else {
+      //   print('지원하지 않는 포맷?');
+      // }
     } else {
       print('녹음 권한이 거부되었습니다.');
     }
   }
 
   Future<void> _stopRecording() async {
-    await _recorder!.stopRecorder();
+    // await _recorder.stopRecorder();
     setState(() {
       _isRecording = false;
     });
-    if (!mounted) return;
+    _animationController.reverse();
     final tempDir = await getTemporaryDirectory();
     final audioPath = '${tempDir.path}/my_voice_recording.wav';
+    if (!mounted) return;
     Navigator.pop(context, audioPath);
   }
 
   @override
   void dispose() {
-    _recorder!.closeRecorder();
-    _recorder = null;
+    // _recorder.closeRecorder();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -83,15 +101,24 @@ class _SpeakScreenState extends State<SpeakScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            FloatingActionButton(
-              child: Icon(_isRecording ? Icons.stop : Icons.mic),
-              onPressed: _isRecording ? _stopRecording : _startRecording,
-            ),
-            SizedBox(height: 20),
             Text(
-              '00:00',
+              _isRecording ? '녹음하세요' : '준비중',
               style: TextStyle(fontSize: 30),
             ),
+            const SizedBox(height: 20),
+            Container(
+              width: _animation.value,
+              height: _animation.value,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _isRecording ? Colors.green : Colors.red,
+              ),
+            ),
+            if (_isRecording)
+              ElevatedButton(
+                onPressed: _stopRecording,
+                child: const Text('녹음 완료'),
+              ),
           ],
         ),
       ),

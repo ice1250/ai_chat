@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:ai_chat/screen/record_test.dart';
 import 'package:ai_chat/screen/speak_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
@@ -85,14 +86,33 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           child: Column(
             children: [
-              Container(
-                padding: const EdgeInsets.all(20),
-                child: const Text(
-                  'AI 스피킹 트레이너',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => RecordTestScreen(
+                        onStop: (path) {
+                          print('Recorded file path: $path');
+
+                          setState(() {
+                            // audioPath = path;
+                            // showPlayer = true;
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(20),
+                  child: const Text(
+                    'AI 스피킹 트레이너',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue,
+                    ),
                   ),
                 ),
               ),
