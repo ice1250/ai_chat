@@ -28,7 +28,6 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('틈새단어'),
-        leading: const Icon(Icons.menu),
         actions: const [
           Padding(
             padding: EdgeInsets.all(8.0),
@@ -47,6 +46,28 @@ class _HomePageState extends State<HomePage> {
             child: Icon(Icons.notifications),
           ),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/chat');
+              },
+              child: ListTile(
+                title: Text('채팅하기'),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, '/setting');
+              },
+              child: ListTile(
+                title: Text('설정'),
+              ),
+            ),
+          ],
+        ),
       ),
       body: _pages[_index],
       bottomNavigationBar: BottomNavigationBar(
