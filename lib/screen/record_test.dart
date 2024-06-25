@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:ai_chat/main.dart';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 
@@ -38,7 +39,7 @@ class _RecordTestScreenState extends State<RecordTestScreen>
         .listen((amp) {
       setState(() {
         var tempCur = 1.0 - max(0.2, amp.current.abs() / 100.0);
-        print('temp = $tempCur');
+        logger.d('temp = $tempCur');
         _amplitude = Amplitude(current: tempCur, max: amp.max);
       });
     });
@@ -55,7 +56,7 @@ class _RecordTestScreenState extends State<RecordTestScreen>
         }
 
         final devs = await _audioRecorder.listInputDevices();
-        debugPrint(devs.toString());
+        logger.d(devs.toString());
 
         const config = RecordConfig(encoder: encoder, numChannels: 1);
 
@@ -70,7 +71,7 @@ class _RecordTestScreenState extends State<RecordTestScreen>
         _startTimer();
       }
     } catch (e) {
-      print(e);
+      logger.d(e);
     }
   }
 
@@ -111,12 +112,12 @@ class _RecordTestScreenState extends State<RecordTestScreen>
     );
 
     if (!isSupported) {
-      debugPrint('${encoder.name} is not supported on this platform.');
-      debugPrint('Supported encoders are:');
+      logger.d('${encoder.name} is not supported on this platform.');
+      logger.d('Supported encoders are:');
 
       for (final e in AudioEncoder.values) {
         if (await _audioRecorder.isEncoderSupported(e)) {
-          debugPrint('- ${encoder.name}');
+          logger.d('- ${encoder.name}');
         }
       }
     }

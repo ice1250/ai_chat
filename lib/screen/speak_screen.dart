@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../main.dart';
+
 class SpeakScreen extends StatefulWidget {
   const SpeakScreen({super.key});
 
@@ -64,7 +66,7 @@ class _SpeakScreenState extends State<SpeakScreen>
       //   print('지원하지 않는 포맷?');
       // }
     } else {
-      print('녹음 권한이 거부되었습니다.');
+      logger.d('녹음 권한이 거부되었습니다.');
     }
   }
 

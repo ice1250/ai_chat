@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:ai_chat/main.dart';
 import 'package:ai_chat/screen/record_test.dart';
 import 'package:ai_chat/screen/speak_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -93,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     MaterialPageRoute(
                       builder: (context) => RecordTestScreen(
                         onStop: (path) {
-                          print('Recorded file path: $path');
+                          logger.d('Recorded file path: $path');
 
                           setState(() {
                             // audioPath = path;

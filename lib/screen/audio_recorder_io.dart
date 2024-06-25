@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:ai_chat/main.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:record/record.dart';
@@ -20,17 +21,14 @@ mixin AudioRecorderMixin {
     final stream = await recorder.startStream(config);
 
     stream.listen(
-          (data) {
-        // ignore: avoid_print
-        print(
+      (data) {
+        logger.d(
           recorder.convertBytesToInt16(Uint8List.fromList(data)),
         );
         file.writeAsBytesSync(data, mode: FileMode.append);
       },
-      // ignore: avoid_print
       onDone: () {
-        // ignore: avoid_print
-        print('End of stream. File written to $path.');
+        logger.d('End of stream. File written to $path.');
       },
     );
   }
