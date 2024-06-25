@@ -1,7 +1,8 @@
-import 'package:ai_chat/voca/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:logger/logger.dart';
+
+import 'screens/splash_screen.dart';
 
 var logger = Logger(
   printer: PrettyPrinter(),

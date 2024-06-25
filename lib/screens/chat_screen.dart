@@ -2,19 +2,19 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:ai_chat/main.dart';
-import 'package:ai_chat/screen/record_test.dart';
-import 'package:ai_chat/screen/speak_screen.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../repository/chat_repository.dart';
+import 'record_test.dart';
+import 'speak_screen.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class ChatMessage {
@@ -33,7 +33,7 @@ class ChatMessage {
   });
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _ChatScreenState extends State<ChatScreen> {
   final messageController = TextEditingController();
   final ChatRepository chatRepository = ChatRepository();
   final AudioPlayer audioPlayer = AudioPlayer();
