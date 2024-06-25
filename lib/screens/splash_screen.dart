@@ -1,8 +1,12 @@
 import 'package:ai_chat/widgets/dialog_update.dart';
 import 'package:flutter/material.dart';
 
-import 'home_screen.dart';
+import 'home_page.dart';
 
+/// 스플래시 스크린
+/// - 앱 강제업데이트 관련 로직
+/// - 디바이스 권한 허용
+/// - 푸시 허용
 class SplashScreen extends StatelessWidget {
   const SplashScreen({super.key});
 
@@ -20,7 +24,7 @@ class SplashScreen extends StatelessWidget {
             onTap: () => Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
+                builder: (context) => const HomePage(),
               ),
               (route) => false,
             ),
