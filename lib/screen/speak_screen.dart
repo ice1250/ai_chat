@@ -103,7 +103,7 @@ class _SpeakScreenState extends State<SpeakScreen>
           children: <Widget>[
             Text(
               _isRecording ? '녹음하세요' : '준비중',
-              style: TextStyle(fontSize: 30),
+              style: const TextStyle(fontSize: 30),
             ),
             const SizedBox(height: 20),
             Container(

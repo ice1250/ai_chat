@@ -175,7 +175,7 @@ class _RecordTestScreenState extends State<RecordTestScreen>
       icon = const Icon(Icons.stop, color: Colors.red, size: 30);
       color = Colors.red.withOpacity(0.1);
     } else {
-      icon = Icon(Icons.mic, color: Colors.red, size: 30);
+      icon = const Icon(Icons.mic, color: Colors.red, size: 30);
       color = Colors.amber.withOpacity(0.1);
     }
 
