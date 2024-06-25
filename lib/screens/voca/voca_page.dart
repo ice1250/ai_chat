@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 /// 어휘 메인페이지
 class VocaPage extends StatefulWidget {
@@ -14,12 +15,28 @@ class _VocaPageState extends State<VocaPage> {
     return Scrollbar(
       child: Column(
         children: [
-          Text('어휘 학습'),
-          TextButton(
+          Container(
+            color: Colors.blue,
+            width: MediaQuery.sizeOf(context).width,
+            height: MediaQuery.sizeOf(context).height * 0.3,
+            child: Row(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Lottie.asset('assets/lottie/fish.json'),
+                ),
+                const Expanded(
+                  flex: 1,
+                  child: Center(child: Text('어휘 학습')),
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
             onPressed: () {
               Navigator.pushNamed(context, '/voca');
             },
-            child: Text('어휘 학습 시작'),
+            child: Text('오늘의 학습'),
           ),
           Text('나의 영어 어휘력은 어느 정도일까?'),
           Text('학습 정보'),
