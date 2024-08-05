@@ -1,60 +1,163 @@
+import 'package:ai_chat/api/api_client.dart';
+import 'package:ai_chat/models/app_version_res.dart';
+import 'package:ai_chat/repository/auth_repository.dart';
 import 'package:ai_chat/widgets/dialog_update.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 스플래시 스크린
 /// - 앱 강제업데이트 관련 로직
 /// - 디바이스 권한 허용
 /// - 푸시 허용
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends ConsumerState<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 3),
+      vsync: this,
+    )..forward();
+
+    _animation = Tween<double>(begin: 1.0, end: 1.3).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    );
+
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        checkLogin();
+        // checkVersion();
+      }
+    });
+  }
+
+  Future<void> checkVersion() async {
+    AppVersionRes result = await ref.watch(apiClientProvider).getVersion();
+    print('result : ${result.data?.version}');
+  }
+
+  void navigateToHome() {
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/home',
+      (route) => false,
+    );
+  }
+
+  void navigateToLogin() {
+    if (!context.mounted) return;
+
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/login',
+      (route) => false,
+    );
+  }
+
+  void checkLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('access_token');
+    final refreshToken = prefs.getString('refresh_token');
+    if (accessToken != null && refreshToken != null) {
+
+      final authRepository = ref.read(authRepositoryProvider);
+      authRepository.getAccessToken(refreshToken).then((value) {
+        if (value.meta.code == 200) {
+          navigateToHome();
+        } else {
+          navigateToLogin();
+        }
+      });
+    } else {
+      navigateToLogin();
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
-      backgroundColor: Colors.purple,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Stack(
         children: [
-          const SizedBox(height: 30),
-          GestureDetector(
-            child: const Text('start'),
-            onTap: () => Navigator.pushNamedAndRemoveUntil(
-              context,
-              '/home',
-              (route) => false,
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return Transform.scale(
+                scale: _animation.value,
+                child: child,
+              );
+            },
+            child: Image.asset(
+              'assets/images/splash_bg.jpg',
+              fit: BoxFit.cover,
+              width: double.infinity,
+              height: double.infinity,
             ),
           ),
-          Expanded(
-            child: Center(
-              child: GestureDetector(
-                  onTap: () => showUpdateDialog(context),
-                  child: Image.asset('assets/images/splash_image.png')),
-            ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const SizedBox(height: 30),
+              GestureDetector(
+                child: const Text('start'),
+                onTap: () => Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  '/login',
+                  (route) => false,
+                ),
+              ),
+              Expanded(
+                child: Center(
+                  child: GestureDetector(
+                      onTap: () => showUpdateDialog(context),
+                      child: Image.asset('assets/images/splash_image.png')),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 30.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "버전 확인중...",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: size.width * .7,
+                      child: const LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(Colors.lightBlue),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 30.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  "버전 확인중...",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(
-                  width: size.width * .7,
-                  child: const LinearProgressIndicator(
-                    backgroundColor: Colors.white,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.lightBlue),
-                  ),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );
