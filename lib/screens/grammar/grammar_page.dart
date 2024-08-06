@@ -1,3 +1,4 @@
+import 'package:ai_chat/widgets/grammar_quiz.dart';
 import 'package:flutter/material.dart';
 
 class GrammarPage extends StatefulWidget {
@@ -10,6 +11,6 @@ class GrammarPage extends StatefulWidget {
 class _GrammarPageState extends State<GrammarPage> {
   @override
   Widget build(BuildContext context) {
-    return Text('문법 학습');
+    return const GrammarQuiz();
   }
 }

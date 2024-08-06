@@ -1,15 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../repository/api_repository.dart';
+
 /// 어휘 메인페이지
-class VocaPage extends StatefulWidget {
+class VocaPage extends ConsumerStatefulWidget {
   const VocaPage({super.key});
 
   @override
-  State<VocaPage> createState() => _VocaPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _VocaPageState();
 }
 
-class _VocaPageState extends State<VocaPage> {
+class _VocaPageState extends ConsumerState<VocaPage> {
+
+  Future<void> requestMainInfo() async{
+    // Request main information
+    final result = await ref.read(apiRepositoryProvider).srrMainInfo(1);
+
+    print(result);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    requestMainInfo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scrollbar(

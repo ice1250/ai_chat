@@ -20,14 +20,11 @@ class AppVersionRes with _$AppVersionRes {
 @freezed
 class Data with _$Data {
   const factory Data({
-    required int seq,
     required int serviceType,
     required int deviceType,
     required String version,
     required String minVersion,
     required String reviewVersion,
-    required DateTime registDate,
-    required DateTime updateDate,
   }) = _Data;
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);

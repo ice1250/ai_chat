@@ -1,9 +1,11 @@
-import 'package:ai_chat/api/api_client.dart';
 import 'package:ai_chat/models/app_version_res.dart';
+import 'package:ai_chat/repository/api_repository.dart';
 import 'package:ai_chat/repository/auth_repository.dart';
+import 'package:ai_chat/widgets/dialog_error.dart';
 import 'package:ai_chat/widgets/dialog_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// 스플래시 스크린
@@ -36,15 +38,34 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        checkLogin();
-        // checkVersion();
+        // checkLogin();
+        checkVersion();
       }
     });
   }
 
   Future<void> checkVersion() async {
-    AppVersionRes result = await ref.watch(apiClientProvider).getVersion();
-    print('result : ${result.data?.version}');
+    AppVersionRes result = await ref.read(apiRepositoryProvider).getVersion();
+    if (result.meta.code == 200 && result.data != null) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+      int v1Number = getExtendedVersionNumber(result.data!.version);
+      int v2Number = getExtendedVersionNumber(packageInfo.version);
+
+      if (v1Number > v2Number) {
+        if (context.mounted) showUpdateDialog(context);
+      } else {
+        checkLogin();
+      }
+    } else {
+      if (context.mounted) showErrorDialog(context);
+    }
+  }
+
+  int getExtendedVersionNumber(String version) {
+    List versionCells = version.split('.');
+    versionCells = versionCells.map((i) => int.parse(i)).toList();
+    return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
   }
 
   void navigateToHome() {
@@ -72,7 +93,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final accessToken = prefs.getString('access_token');
     final refreshToken = prefs.getString('refresh_token');
     if (accessToken != null && refreshToken != null) {
-
       final authRepository = ref.read(authRepositoryProvider);
       authRepository.getAccessToken(refreshToken).then((value) {
         if (value.meta.code == 200) {
