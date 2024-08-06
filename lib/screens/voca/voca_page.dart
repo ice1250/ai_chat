@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../data/repository/api_repository.dart';
-
 /// 어휘 메인페이지
 class VocaPage extends ConsumerStatefulWidget {
   const VocaPage({super.key});

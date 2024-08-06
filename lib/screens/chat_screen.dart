@@ -6,7 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../data/repository/chat_repository.dart';
+import '../data/api/chat_repository.dart';
 import 'record_test.dart';
 import 'speak_screen.dart';
 

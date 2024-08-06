@@ -1,12 +1,11 @@
 import 'package:ai_chat/constants/const.dart';
-import 'package:ai_chat/data/providers/api_repository_provider.dart';
+import 'package:ai_chat/data/api/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../data/providers/api_client_provider.dart';
+import '../../data/api/api_repository.dart';
 import '../../data/providers/secure_storage_provider.dart';
-import '../../data/repository/auth_repository.dart';
 import '../../widgets/dialog_error.dart';
 import '../../widgets/dialog_update.dart';
 
@@ -47,9 +46,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> checkVersion() async {
-    final result = await ref
-        .read(apiRepositoryProvider)
-        .getVersion(apiClient: ref.read(apiClientProvider));
+    final result = await ref.read(apiRepositoryProvider).getVersion();
 
     if (result.meta.code == 200 && result.data != null) {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -99,7 +96,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final refreshToken = await storage.read(key: refreshTokenKey);
     if (accessToken != null && refreshToken != null) {
       final authRepository = ref.read(authRepositoryProvider);
-      authRepository.getAccessToken(refreshToken).then((value) {
+      authRepository.getAccessToken().then((value) {
         if (value.meta.code == 200) {
           navigateToHome();
         } else {

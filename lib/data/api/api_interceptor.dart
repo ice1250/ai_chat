@@ -12,9 +12,6 @@ class ApiInterceptor extends InterceptorsWrapper {
   @override
   Future<void> onRequest(
       RequestOptions options, RequestInterceptorHandler handler) async {
-    if (options.uri.path.contains('get-version')) {
-      return handler.next(options);
-    }
     // 요청 전처리
     // 예 : 헤더 추가, 토큰 갱신
 

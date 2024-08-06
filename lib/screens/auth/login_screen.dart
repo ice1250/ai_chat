@@ -1,11 +1,10 @@
 import 'package:ai_chat/constants/const.dart';
+import 'package:ai_chat/data/api/auth_repository.dart';
 import 'package:ai_chat/data/providers/secure_storage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../data/models/token_res.dart';
-import '../../data/repository/auth_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -55,12 +54,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final authRepository = ref.read(authRepositoryProvider);
 
-    TokenRes result = await authRepository.getToken('2', id, password);
+    TokenRes result = await authRepository.getToken(id, password);
 
     if (result.meta.code == 200 && result.data != null) {
       final storage = ref.read(secureStorageProvider);
       await storage.write(key: accessTokenKey, value: result.data!.accessToken);
-      await storage.write(key: refreshTokenKey, value: result.data!.refreshToken);
+      await storage.write(
+          key: refreshTokenKey, value: result.data!.refreshToken);
       await storage.write(key: userNameKey, value: result.data!.user.userName);
 
       _navigateHome();
