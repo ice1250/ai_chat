@@ -1,3 +1,5 @@
+import 'package:ai_chat/constants/const.dart';
+import 'package:ai_chat/data/providers/secure_storage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,11 +58,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     TokenRes result = await authRepository.getToken('2', id, password);
 
     if (result.meta.code == 200 && result.data != null) {
-      final pref = await SharedPreferences.getInstance();
-
-      pref.setString('access_token', result.data!.accessToken);
-      pref.setString('refresh_token', result.data!.refreshToken);
-      pref.setString('userName', result.data!.user.userName);
+      final storage = ref.read(secureStorageProvider);
+      await storage.write(key: accessTokenKey, value: result.data!.accessToken);
+      await storage.write(key: refreshTokenKey, value: result.data!.refreshToken);
+      await storage.write(key: userNameKey, value: result.data!.user.userName);
 
       _navigateHome();
     } else {

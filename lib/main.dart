@@ -26,12 +26,12 @@ void main() async {
     child: MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => const SplashScreen(),
         '/home': (context) => const HomePage(),
         '/login': (context) => const LoginScreen(),
         '/voca': (context) => const VocaDetailPage(),
         '/setting': (context) => const SettingPage(),
         '/chat': (context) => const ChatScreen(),
+        '/': (context) => const SplashScreen(),
       },
     ),
   ));
