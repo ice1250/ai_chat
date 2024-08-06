@@ -19,20 +19,20 @@ class _GrammarQuizState extends State<GrammarQuiz> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             '문제: 다음 중 올바른 문법은?',
             style: TextStyle(fontSize: 18),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           _buildAnswerTile(0, '답변 1'),
           _buildAnswerTile(1, '답변 2'),
           _buildAnswerTile(2, '답변 3'),
           _buildAnswerTile(3, '답변 4'),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
             child: ElevatedButton(
               onPressed: _selectedAnswer != null ? _confirmAnswer : null,
-              child: Text('확인'),
+              child: const Text('확인'),
             ),
           ),
         ],

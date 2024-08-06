@@ -1,13 +1,13 @@
-import 'package:ai_chat/widgets/dialog_error.dart';
-import 'package:ai_chat/widgets/dialog_update.dart';
+import 'package:ai_chat/data/providers/api_repository_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/models/app_version_res.dart';
-import '../data/repository/api_repository.dart';
-import '../data/repository/auth_repository.dart';
+import '../../data/providers/api_client_provider.dart';
+import '../../data/repository/auth_repository.dart';
+import '../../widgets/dialog_error.dart';
+import '../../widgets/dialog_update.dart';
 
 /// 스플래시 스크린
 /// - 앱 강제업데이트 관련 로직
@@ -46,7 +46,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   Future<void> checkVersion() async {
-    AppVersionRes result = await ref.read(apiRepositoryProvider).getVersion();
+    final result = await ref
+        .read(apiRepositoryProvider)
+        .getVersion(apiClient: ref.read(apiClientProvider));
+
     if (result.meta.code == 200 && result.data != null) {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
@@ -115,7 +118,22 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
+    // final versionResult = ref.read(getVersionProvider(
+    //     apiClient: ref.read(apiClientProvider),
+    //     apiRepository: ref.read(apiRepositoryProvider)));
+
+    // versionResult.when(
+    //   data: (data) {
+    //     print('데이터 가져오기 성공');
+    //   },
+    //   error: (error, stackTrace) {
+    //     print('데이터 가져오기 실패 $error');
+    //   },
+    //   loading: () {
+    //     print('로딩중');
+    //   },
+    // );
+
     return Scaffold(
       body: Stack(
         children: [
@@ -133,51 +151,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               width: double.infinity,
               height: double.infinity,
             ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const SizedBox(height: 30),
-              GestureDetector(
-                child: const Text('start'),
-                onTap: () => Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  '/login',
-                  (route) => false,
-                ),
-              ),
-              Expanded(
-                child: Center(
-                  child: GestureDetector(
-                      onTap: () => showUpdateDialog(context),
-                      child: Image.asset('assets/images/splash_image.png')),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 30.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text(
-                      "버전 확인중...",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: size.width * .7,
-                      child: const LinearProgressIndicator(
-                        backgroundColor: Colors.white,
-                        valueColor:
-                            AlwaysStoppedAnimation<Color>(Colors.lightBlue),
-                      ),
-                    ),
-                  ],
-                ),
-              )
-            ],
           ),
         ],
       ),

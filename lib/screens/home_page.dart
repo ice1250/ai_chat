@@ -16,11 +16,11 @@ class _HomePageState extends State<HomePage> {
   var _index = 0;
 
   final List _pages = [
-    VocaPage(),
-    GrammarPage(),
-    ListeningPage(),
-    LeaguePage(),
-    PremiumPage(),
+    const VocaPage(),
+    const GrammarPage(),
+    const ListeningPage(),
+    const LeaguePage(),
+    const PremiumPage(),
   ];
 
   @override
@@ -54,7 +54,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.pushNamed(context, '/chat');
               },
-              child: ListTile(
+              child: const ListTile(
                 title: Text('채팅하기'),
               ),
             ),
@@ -62,7 +62,7 @@ class _HomePageState extends State<HomePage> {
               onTap: () {
                 Navigator.pushNamed(context, '/setting');
               },
-              child: ListTile(
+              child: const ListTile(
                 title: Text('설정'),
               ),
             ),

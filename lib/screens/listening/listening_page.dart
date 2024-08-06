@@ -10,6 +10,6 @@ class ListeningPage extends StatefulWidget {
 class _ListeningPageState extends State<ListeningPage> {
   @override
   Widget build(BuildContext context) {
-    return Text('리스닝 학습');
+    return const Text('리스닝 학습');
   }
 }

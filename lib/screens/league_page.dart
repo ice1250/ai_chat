@@ -10,6 +10,6 @@ class LeaguePage extends StatefulWidget {
 class _LeaguePageState extends State<LeaguePage> {
   @override
   Widget build(BuildContext context) {
-    return Text('리그');
+    return const Text('리그');
   }
 }

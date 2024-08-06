@@ -10,6 +10,6 @@ class PremiumPage extends StatefulWidget {
 class _PremiumPageState extends State<PremiumPage> {
   @override
   Widget build(BuildContext context) {
-    return Text('프리미엄');
+    return const Text('프리미엄');
   }
 }

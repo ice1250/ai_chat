@@ -16,9 +16,9 @@ class _VocaPageState extends ConsumerState<VocaPage> {
 
   Future<void> requestMainInfo() async{
     // Request main information
-    final result = await ref.read(apiRepositoryProvider).srrMainInfo(1);
-
-    print(result);
+    // final result = await ref.read(apiRepositoryProvider).srrMainInfo(1);
+    //
+    // print(result);
   }
 
   @override
@@ -54,19 +54,19 @@ class _VocaPageState extends ConsumerState<VocaPage> {
             onPressed: () {
               Navigator.pushNamed(context, '/voca');
             },
-            child: Text('오늘의 학습'),
+            child: const Text('오늘의 학습'),
           ),
-          Text('나의 영어 어휘력은 어느 정도일까?'),
-          Text('학습 정보'),
-          Text('출석 체크'),
-          Text('캐릭터 상점'),
-          Text('정확하게 발음하지 못한 어휘'),
-          Text('일별 학습 어휘'),
-          Text('최근에 잊어버린 어휘'),
-          Text('역대 가장 많이 잊어버린 어휘'),
-          Text('길게 기억했다 잊어버린 어휘'),
-          Text('복습이 필요없는 어휘'),
-          Text('내가 만든 단어장'),
+          const Text('나의 영어 어휘력은 어느 정도일까?'),
+          const Text('학습 정보'),
+          const Text('출석 체크'),
+          const Text('캐릭터 상점'),
+          const Text('정확하게 발음하지 못한 어휘'),
+          const Text('일별 학습 어휘'),
+          const Text('최근에 잊어버린 어휘'),
+          const Text('역대 가장 많이 잊어버린 어휘'),
+          const Text('길게 기억했다 잊어버린 어휘'),
+          const Text('복습이 필요없는 어휘'),
+          const Text('내가 만든 단어장'),
         ],
       ),
     );
