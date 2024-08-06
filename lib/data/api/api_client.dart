@@ -1,7 +1,8 @@
-import 'package:ai_chat/models/app_version_res.dart';
 import 'package:dio/dio.dart' hide Headers;
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../models/app_version_res.dart';
 
 part 'api_client.g.dart';
 

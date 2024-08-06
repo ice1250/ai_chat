@@ -1,12 +1,13 @@
-import 'package:ai_chat/models/app_version_res.dart';
-import 'package:ai_chat/repository/api_repository.dart';
-import 'package:ai_chat/repository/auth_repository.dart';
 import 'package:ai_chat/widgets/dialog_error.dart';
 import 'package:ai_chat/widgets/dialog_update.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/models/app_version_res.dart';
+import '../data/repository/api_repository.dart';
+import '../data/repository/auth_repository.dart';
 
 /// 스플래시 스크린
 /// - 앱 강제업데이트 관련 로직

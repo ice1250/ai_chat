@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../repository/api_repository.dart';
+import '../../data/repository/api_repository.dart';
 
 /// 어휘 메인페이지
 class VocaPage extends ConsumerStatefulWidget {

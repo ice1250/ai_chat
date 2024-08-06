@@ -1,7 +1,8 @@
-import 'package:ai_chat/models/token_res.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
+
+import '../models/token_res.dart';
 
 part 'auth_client.g.dart';
 

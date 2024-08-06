@@ -1,9 +1,9 @@
-import 'package:ai_chat/models/token_res.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../repository/auth_repository.dart';
+import '../../data/models/token_res.dart';
+import '../../data/repository/auth_repository.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
