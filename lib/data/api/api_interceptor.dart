@@ -96,7 +96,12 @@ class ApiInterceptor extends InterceptorsWrapper {
         return handler.resolve(newResponse);
       } on DioException catch (e) {
         // 새로운 Access Token임에도 에러가 발생한다면, Refresh Token마저도 만료된 것임
-        // TODO 로그아웃 처리
+        storage.delete(key: accessTokenKey);
+        storage.delete(key: refreshTokenKey);
+
+        // TODO 로그인 화면으로 이동
+
+
         return handler.reject(e);
       }
     }

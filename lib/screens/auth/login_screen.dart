@@ -1,8 +1,6 @@
+import 'package:ai_chat/data/notifier/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import '../../data/models/token_res.dart';
-import '../../data/providers/token_notifier_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -15,87 +13,74 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  void _navigateHome() {
-    if (!context.mounted) return;
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/home',
-      (route) => false,
+  void showSnackBar(BuildContext context, String text) {
+    final snackBar = SnackBar(
+      content: Text(text),
+      duration: const Duration(seconds: 5),
     );
-  }
-
-  void _showErrorDialog() {
-    if (!context.mounted) return;
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Login Failed'),
-          content: const Text('Please check your ID and password.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(tokenNotifierProvider);
-
-    // FIXME 이거는 안좋은코드.. 라우터도 Notifier로 관리하도록 변경 필요!!!!
-    if (state is TokenRes) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _navigateHome();
-      });
-    } else if (state is TokenResError) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showErrorDialog();
-      });
-    }
+    final state = ref.watch(authNotifierProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _idController,
-              decoration: const InputDecoration(
-                labelText: 'ID',
-              ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                TextField(
+                  controller: _idController,
+                  decoration: const InputDecoration(
+                    labelText: 'ID',
+                  ),
+                ),
+                TextField(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  ),
+                  obscureText: true,
+                ),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: state.isLoading
+                      ? null
+                      : () {
+                          ref
+                              .read(authNotifierProvider.notifier)
+                              .login(
+                                  id: _idController.text,
+                                  password: _passwordController.text)
+                              .then((value) {
+                            if (!context.mounted) return;
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              '/home',
+                              (route) => false,
+                            );
+                          }).onError((error, stackTrace) {
+                            if (!context.mounted) return;
+                            showSnackBar(context, error.toString());
+                          });
+                        },
+                  child: const Text('Login'),
+                ),
+              ],
             ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true,
+          ),
+          if (state.isLoading)
+            const Center(
+              child: CircularProgressIndicator(),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: state is TokenResLoading
-                  ? null
-                  : () async {
-                      await ref.read(tokenNotifierProvider.notifier).login(
-                            id: _idController.text,
-                            password: _passwordController.text,
-                          );
-                    },
-              child: const Text('Login'),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

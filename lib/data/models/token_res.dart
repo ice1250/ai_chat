@@ -3,26 +3,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'meta.dart';
 
 part 'token_res.freezed.dart';
-
 part 'token_res.g.dart';
 
-abstract class TokenResBase {}
-
-class TokenResError extends TokenResBase {
-  final String error;
-
-  TokenResError({
-    required this.error,
-  });
-}
-
-class TokenResLoading extends TokenResBase {}
-
-// FIXME 이거는 안좋은 코드.. 나중에 Notifier 추가해야함.
-class TokenResLogout extends TokenResBase {}
-
 @freezed
-class TokenRes extends TokenResBase with _$TokenRes {
+class TokenRes with _$TokenRes {
   const factory TokenRes({
     required Meta meta,
     required Data? data,

@@ -1,12 +1,9 @@
-import 'package:ai_chat/data/api/auth_repository.dart';
-import 'package:ai_chat/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../const/data.dart';
 import '../../data/api/api_repository.dart';
-import '../../data/providers/secure_storage_provider.dart';
+import '../../data/notifier/auth_notifier.dart';
 import '../../widgets/dialog_error.dart';
 import '../../widgets/dialog_update.dart';
 
@@ -92,20 +89,17 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void checkLogin() async {
-    final storage = ref.read(secureStorageProvider);
-    final accessToken = await storage.read(key: accessTokenKey);
-    final refreshToken = await storage.read(key: refreshTokenKey);
+    final authNotifier = ref.read(authNotifierProvider.notifier);
 
-    logger.d('accessToken: $accessToken');
-    logger.d('refreshToken: $refreshToken');
-    if (accessToken != null && refreshToken != null) {
-      final authRepository = ref.read(authRepositoryProvider);
-      authRepository.getAccessToken().then((value) {
+    if (await authNotifier.hasToken()) {
+      authNotifier.refreshToken().then((value) {
         if (value.meta.code == 200) {
           navigateToHome();
         } else {
           navigateToLogin();
         }
+      }).onError((error, stackTrace) {
+        navigateToLogin();
       });
     } else {
       navigateToLogin();
@@ -120,22 +114,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
-    // final versionResult = ref.read(getVersionProvider(
-    //     apiClient: ref.read(apiClientProvider),
-    //     apiRepository: ref.read(apiRepositoryProvider)));
-
-    // versionResult.when(
-    //   data: (data) {
-    //     print('데이터 가져오기 성공');
-    //   },
-    //   error: (error, stackTrace) {
-    //     print('데이터 가져오기 실패 $error');
-    //   },
-    //   loading: () {
-    //     print('로딩중');
-    //   },
-    // );
-
     return Scaffold(
       body: Stack(
         children: [

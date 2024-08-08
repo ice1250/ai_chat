@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'meta.dart';
 
 part 'app_version_res.freezed.dart';
@@ -13,7 +14,6 @@ class AppVersionRes with _$AppVersionRes {
 
   factory AppVersionRes.fromJson(Map<String, dynamic> json) =>
       _$AppVersionResFromJson(json);
-
 }
 
 @freezed
@@ -27,5 +27,4 @@ class Data with _$Data {
   }) = _Data;
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
-
 }
