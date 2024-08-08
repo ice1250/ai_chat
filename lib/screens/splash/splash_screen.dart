@@ -1,9 +1,10 @@
-import 'package:ai_chat/constants/const.dart';
 import 'package:ai_chat/data/api/auth_repository.dart';
+import 'package:ai_chat/main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../const/data.dart';
 import '../../data/api/api_repository.dart';
 import '../../data/providers/secure_storage_provider.dart';
 import '../../widgets/dialog_error.dart';
@@ -94,6 +95,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
     final storage = ref.read(secureStorageProvider);
     final accessToken = await storage.read(key: accessTokenKey);
     final refreshToken = await storage.read(key: refreshTokenKey);
+
+    logger.d('accessToken: $accessToken');
+    logger.d('refreshToken: $refreshToken');
     if (accessToken != null && refreshToken != null) {
       final authRepository = ref.read(authRepositoryProvider);
       authRepository.getAccessToken().then((value) {

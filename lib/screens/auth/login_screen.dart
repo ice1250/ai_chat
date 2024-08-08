@@ -1,10 +1,8 @@
-import 'package:ai_chat/constants/const.dart';
-import 'package:ai_chat/data/api/auth_repository.dart';
-import 'package:ai_chat/data/providers/secure_storage_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/models/token_res.dart';
+import '../../data/providers/token_notifier_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -16,7 +14,6 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final TextEditingController _idController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String? _userName;
 
   void _navigateHome() {
     if (!context.mounted) return;
@@ -48,32 +45,25 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     );
   }
 
-  Future<void> _login() async {
-    String id = _idController.text;
-    String password = _passwordController.text;
-
-    final authRepository = ref.read(authRepositoryProvider);
-
-    TokenRes result = await authRepository.getToken(id, password);
-
-    if (result.meta.code == 200 && result.data != null) {
-      final storage = ref.read(secureStorageProvider);
-      await storage.write(key: accessTokenKey, value: result.data!.accessToken);
-      await storage.write(
-          key: refreshTokenKey, value: result.data!.refreshToken);
-      await storage.write(key: userNameKey, value: result.data!.user.userName);
-
-      _navigateHome();
-    } else {
-      _showErrorDialog();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(tokenNotifierProvider);
+
+    // FIXME 이거는 안좋은코드.. 라우터도 Notifier로 관리하도록 변경 필요!!!!
+    if (state is TokenRes) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _navigateHome();
+      });
+    } else if (state is TokenResError) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showErrorDialog();
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login'),
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -94,13 +84,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _login,
+              onPressed: state is TokenResLoading
+                  ? null
+                  : () async {
+                      await ref.read(tokenNotifierProvider.notifier).login(
+                            id: _idController.text,
+                            password: _passwordController.text,
+                          );
+                    },
               child: const Text('Login'),
             ),
-            if (_userName != null) ...[
-              const SizedBox(height: 20),
-              Text('Welcome, $_userName!'),
-            ],
           ],
         ),
       ),

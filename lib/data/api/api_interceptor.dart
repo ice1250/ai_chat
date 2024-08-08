@@ -1,8 +1,9 @@
-import 'package:ai_chat/constants/const.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
     as flutter_secure_storage;
+
+import '../../const/data.dart';
 
 class ApiInterceptor extends InterceptorsWrapper {
   final flutter_secure_storage.FlutterSecureStorage storage;
