@@ -51,6 +51,7 @@ dependencies:
   freezed_annotation: ^2.4.4
   package_info_plus: ^8.0.1
   flutter_secure_storage: ^9.2.2
+  go_router: ^14.2.3
 
 dev_dependencies:
   flutter_test:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
 /// 어휘 메인페이지
@@ -50,7 +51,7 @@ class _VocaPageState extends ConsumerState<VocaPage> {
           ),
           ElevatedButton(
             onPressed: () {
-              Navigator.pushNamed(context, '/voca');
+              context.go('/voca');
             },
             child: const Text('오늘의 학습'),
           ),

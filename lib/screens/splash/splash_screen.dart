@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../data/api/api_repository.dart';
@@ -69,39 +70,32 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   }
 
   void navigateToHome() {
-    if (!context.mounted) return;
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/home',
-      (route) => false,
-    );
+    print('navigateToHome');
+    context.go('/');
   }
 
   void navigateToLogin() {
-    if (!context.mounted) return;
-
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      '/login',
-      (route) => false,
-    );
+    print('navigateToLogin');
+    context.go('/login');
   }
 
   void checkLogin() async {
-    final authNotifier = ref.read(authNotifierProvider.notifier);
+    final authNotifier = ref.watch(authNotifierProvider.notifier);
 
     if (await authNotifier.hasToken()) {
-      authNotifier.refreshToken().then((value) {
+      await authNotifier.refreshToken().then((value) {
         if (value.meta.code == 200) {
           navigateToHome();
         } else {
+          print('navi 1');
           navigateToLogin();
         }
       }).onError((error, stackTrace) {
+        print('navi 2 $error');
         navigateToLogin();
       });
     } else {
+      print('navi 3');
       navigateToLogin();
     }
   }

@@ -5,7 +5,7 @@ import 'package:ai_chat/main.dart';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
 
-import '../utils/audio_recorder_io.dart';
+import '../../../utils/audio_recorder_io.dart';
 
 class RecordTestScreen extends StatefulWidget {
   final void Function(String path) onStop;

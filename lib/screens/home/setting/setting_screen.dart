@@ -1,15 +1,16 @@
 import 'package:ai_chat/data/notifier/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class SettingPage extends ConsumerStatefulWidget {
-  const SettingPage({super.key});
+class SettingScreen extends ConsumerStatefulWidget {
+  const SettingScreen({super.key});
 
   @override
-  ConsumerState<SettingPage> createState() => _SettingPageState();
+  ConsumerState<SettingScreen> createState() => _SettingScreenState();
 }
 
-class _SettingPageState extends ConsumerState<SettingPage> {
+class _SettingScreenState extends ConsumerState<SettingScreen> {
   final List<String> _items = List.generate(9, (index) => 'Item ${index + 1}');
 
   @override
@@ -49,7 +50,6 @@ class _SettingPageState extends ConsumerState<SettingPage> {
   }
 
   Widget _buildLogoutItem() {
-
     return Container(
       padding: const EdgeInsets.all(16.0),
       margin: const EdgeInsets.symmetric(vertical: 4.0),
@@ -79,11 +79,7 @@ class _SettingPageState extends ConsumerState<SettingPage> {
                 if (value) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     if (!context.mounted) return;
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      '/login',
-                      (route) => false,
-                    );
+                    context.go('/login');
                   });
                 }
               });

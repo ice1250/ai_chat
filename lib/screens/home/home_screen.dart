@@ -1,19 +1,20 @@
-import 'package:ai_chat/screens/grammar/grammar_page.dart';
-import 'package:ai_chat/screens/league_page.dart';
-import 'package:ai_chat/screens/listening/listening_page.dart';
-import 'package:ai_chat/screens/premium_page.dart';
-import 'package:ai_chat/screens/voca/voca_page.dart';
+import 'package:ai_chat/screens/home/grammar_page.dart';
+import 'package:ai_chat/screens/home/league_page.dart';
+import 'package:ai_chat/screens/home/listening_page.dart';
+import 'package:ai_chat/screens/home/premium_page.dart';
+import 'package:ai_chat/screens/home/voca_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _HomePageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   var _index = 0;
 
   final List _pages = [
@@ -53,7 +54,7 @@ class _HomePageState extends ConsumerState<HomePage> {
           children: [
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/chat');
+                context.go('/chat');
               },
               child: const ListTile(
                 title: Text('채팅하기'),
@@ -61,7 +62,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, '/setting');
+                context.go('/setting');
               },
               child: const ListTile(
                 title: Text('설정'),

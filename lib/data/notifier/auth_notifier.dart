@@ -41,13 +41,16 @@ class AuthNotifier extends _$AuthNotifier {
     final storage = ref.read(secureStorageProvider);
 
     final result = await authRepository.getAccessToken();
+    print('result 1');
     if (result.meta.code == 200 && result.data != null) {
+      print('result 2');
       await storage.write(key: accessTokenKey, value: result.data!.accessToken);
       await storage.write(
           key: refreshTokenKey, value: result.data!.refreshToken);
       state = AsyncValue.data(result);
       return result;
     } else {
+      print('result 3');
       state = AsyncError(result.meta.message, StackTrace.current);
       return Future.error(result.meta.message);
     }

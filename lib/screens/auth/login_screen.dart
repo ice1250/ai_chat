@@ -1,6 +1,7 @@
 import 'package:ai_chat/data/notifier/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -61,11 +62,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   password: _passwordController.text)
                               .then((value) {
                             if (!context.mounted) return;
-                            Navigator.pushNamedAndRemoveUntil(
-                              context,
-                              '/home',
-                              (route) => false,
-                            );
+                            context.go('/');
                           }).onError((error, stackTrace) {
                             if (!context.mounted) return;
                             showSnackBar(context, error.toString());
