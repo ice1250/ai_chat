@@ -37,6 +37,7 @@ class User with _$User {
     required String userName,
     required String nickName,
     required String profileImageUrl,
+    @Default(false) bool isPremium,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

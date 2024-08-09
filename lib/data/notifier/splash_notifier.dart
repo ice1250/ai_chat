@@ -56,6 +56,25 @@ class SplashNotifier extends _$SplashNotifier {
     }
   }
 
+  Future<void> checkLicense() async {
+    final userProviderNotifier = ref.read(setUserProvider.notifier);
+    var userProvider = userProviderNotifier.state;
+    bool isPremium = false;
+
+    final response = await ref.read(apiRepositoryProvider).myClass();
+    if (response.meta.code == 200 && response.data != null) {
+      for (var element in response.data!) {
+        if (element.freeYn == 'N') {
+          isPremium = true;
+          break;
+        }
+      }
+    }
+
+    userProviderNotifier.state = userProvider?.copyWith(isPremium: isPremium);
+    _event(SplashState.authenticated);
+  }
+
   int getExtendedVersionNumber(String version) {
     List versionCells = version.split('.');
     versionCells = versionCells.map((i) => int.parse(i)).toList();
@@ -73,7 +92,8 @@ class SplashNotifier extends _$SplashNotifier {
         (value) {
           if (value.meta.code == 200 && value.data != null) {
             ref.read(setUserProvider.notifier).state = value.data!.user;
-            _event(SplashState.authenticated);
+            //_event(SplashState.authenticated);
+            checkLicense();
           } else {
             _event(SplashState.unauthenticated);
           }

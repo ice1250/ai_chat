@@ -33,7 +33,7 @@ class _VocaPageState extends ConsumerState<VocaPage> {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Center(child: Text('어휘 학습 ${userInfo?.nickName}')),
+                  child: Center(child: Text('어휘 학습 ${userInfo?.nickName} ${userInfo?.isPremium == true ? '프리미엄' : ''}')),
                 ),
               ],
             ),
