@@ -56,17 +56,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ? null
                       : () {
                           ref
-                              .read(authNotifierProvider.notifier)
+                              .read(
+                                authNotifierProvider.notifier,
+                              )
                               .login(
-                                  id: _idController.text,
-                                  password: _passwordController.text)
-                              .then((value) {
-                            if (!context.mounted) return;
-                            context.go('/');
-                          }).onError((error, stackTrace) {
-                            if (!context.mounted) return;
-                            showSnackBar(context, error.toString());
-                          });
+                                id: _idController.text,
+                                password: _passwordController.text,
+                              )
+                              .then(
+                            (value) {
+                              if (!context.mounted) return;
+                              context.go('/');
+                            },
+                          ).onError(
+                            (error, stackTrace) {
+                              if (!context.mounted) return;
+                              showSnackBar(context, error.toString());
+                            },
+                          );
                         },
                   child: const Text('Login'),
                 ),

@@ -4,6 +4,7 @@ import '../../const/data.dart';
 import '../api/auth_repository.dart';
 import '../models/token_res.dart';
 import '../providers/secure_storage_provider.dart';
+import '../providers/user_provider.dart';
 
 part 'auth_notifier.g.dart';
 
@@ -26,6 +27,8 @@ class AuthNotifier extends _$AuthNotifier {
       await storage.write(key: accessTokenKey, value: result.data!.accessToken);
       await storage.write(
           key: refreshTokenKey, value: result.data!.refreshToken);
+      ref.read(setUserProvider.notifier).state = result.data!.user;
+
       state = AsyncData(result);
       return result;
     } else {
@@ -39,6 +42,7 @@ class AuthNotifier extends _$AuthNotifier {
     await storage.delete(key: accessTokenKey);
     await storage.delete(key: refreshTokenKey);
     state = const AsyncValue.data(null);
+    ref.read(setUserProvider.notifier).state = null;
     return true;
   }
 }

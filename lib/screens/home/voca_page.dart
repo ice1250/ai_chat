@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../data/providers/user_provider.dart';
+
 /// 어휘 메인페이지
 class VocaPage extends ConsumerStatefulWidget {
   const VocaPage({super.key});
@@ -12,23 +14,10 @@ class VocaPage extends ConsumerStatefulWidget {
 }
 
 class _VocaPageState extends ConsumerState<VocaPage> {
-
-  Future<void> requestMainInfo() async{
-    // Request main information
-    // final result = await ref.read(apiRepositoryProvider).srrMainInfo(1);
-    //
-    // print(result);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    requestMainInfo();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final userInfo = ref.watch(getUserProvider);
+
     return Scrollbar(
       child: Column(
         children: [
@@ -42,9 +31,9 @@ class _VocaPageState extends ConsumerState<VocaPage> {
                   flex: 1,
                   child: Lottie.asset('assets/lottie/fish.json'),
                 ),
-                const Expanded(
+                Expanded(
                   flex: 1,
-                  child: Center(child: Text('어휘 학습')),
+                  child: Center(child: Text('어휘 학습 ${userInfo?.nickName}')),
                 ),
               ],
             ),

@@ -1,7 +1,6 @@
 import 'package:ai_chat/data/notifier/auth_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class SettingScreen extends ConsumerStatefulWidget {
   const SettingScreen({super.key});
@@ -75,14 +74,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
-              ref.read(authNotifierProvider.notifier).logout().then((value) {
-                if (value) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    if (!context.mounted) return;
-                    context.go('/login');
-                  });
-                }
-              });
+              ref.read(authNotifierProvider.notifier).logout();
             },
           ),
         ],

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:ai_chat/data/providers/user_provider.dart';
 import 'package:dio/dio.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -67,9 +68,11 @@ class SplashNotifier extends _$SplashNotifier {
 
     final refreshToken = await storage.read(key: refreshTokenKey);
     if (refreshToken != null) {
+      // 이 로직이 꼭 필요한건지??? 실제로 accessToken이 만료되었을때 interceptor 에서 갱신을 해주고 있는데 굳이 해야하나?
       await authRepository.getAccessToken().then(
         (value) {
           if (value.meta.code == 200 && value.data != null) {
+            ref.read(setUserProvider.notifier).state = value.data!.user;
             _event(SplashState.authenticated);
           } else {
             _event(SplashState.unauthenticated);
