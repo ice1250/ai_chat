@@ -1,17 +1,11 @@
+import 'package:ai_chat/data/notifier/splash_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../data/api/api_repository.dart';
-import '../../data/notifier/auth_notifier.dart';
 import '../../widgets/dialog_error.dart';
 import '../../widgets/dialog_update.dart';
 
-/// 스플래시 스크린
-/// - 앱 강제업데이트 관련 로직
-/// - 디바이스 권한 허용
-/// - 푸시 허용
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
@@ -38,66 +32,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
     _controller.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
-        // checkLogin();
-        checkVersion();
+        ref.read(splashNotifierProvider.notifier).finishLoading();
       }
     });
-  }
-
-  Future<void> checkVersion() async {
-    final result = await ref.read(apiRepositoryProvider).getVersion();
-
-    if (result.meta.code == 200 && result.data != null) {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-      int v1Number = getExtendedVersionNumber(result.data!.version);
-      int v2Number = getExtendedVersionNumber(packageInfo.version);
-
-      if (v1Number > v2Number) {
-        if (context.mounted) showUpdateDialog(context);
-      } else {
-        checkLogin();
-      }
-    } else {
-      if (context.mounted) showErrorDialog(context);
-    }
-  }
-
-  int getExtendedVersionNumber(String version) {
-    List versionCells = version.split('.');
-    versionCells = versionCells.map((i) => int.parse(i)).toList();
-    return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
-  }
-
-  void navigateToHome() {
-    print('navigateToHome');
-    context.go('/');
-  }
-
-  void navigateToLogin() {
-    print('navigateToLogin');
-    context.go('/login');
-  }
-
-  void checkLogin() async {
-    final authNotifier = ref.watch(authNotifierProvider.notifier);
-
-    if (await authNotifier.hasToken()) {
-      await authNotifier.refreshToken().then((value) {
-        if (value.meta.code == 200) {
-          navigateToHome();
-        } else {
-          print('navi 1');
-          navigateToLogin();
-        }
-      }).onError((error, stackTrace) {
-        print('navi 2 $error');
-        navigateToLogin();
-      });
-    } else {
-      print('navi 3');
-      navigateToLogin();
-    }
   }
 
   @override
@@ -108,6 +45,31 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<AsyncValue<SplashState>>(splashNotifierProvider,
+        (previous, next) {
+      next.when(
+        data: (data) {
+          if (data == SplashState.authenticated) {
+            context.go('/');
+          } else if (data == SplashState.unauthenticated) {
+            context.go('/login');
+          } else if (data == SplashState.versionUpdate) {
+            showUpdateDialog(context);
+          } else if (data == SplashState.versionError) {
+            showErrorDialog(context);
+          } else if (data == SplashState.error) {
+            showErrorDialog(context);
+          }
+        },
+        error: (error, stackTrace) {
+          // Handle error state
+        },
+        loading: () {
+          // Handle loading state if needed
+        },
+      );
+    });
+
     return Scaffold(
       body: Stack(
         children: [
@@ -126,6 +88,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               height: double.infinity,
             ),
           ),
+
         ],
       ),
     );
