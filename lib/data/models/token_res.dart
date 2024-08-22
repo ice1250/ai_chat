@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 import 'meta.dart';
 
@@ -7,9 +8,10 @@ part 'token_res.g.dart';
 
 @freezed
 class TokenRes with _$TokenRes {
+  @JsonSerializable(explicitToJson: true)
   const factory TokenRes({
     required Meta meta,
-    required Data? data,
+    required Token? data,
   }) = _TokenRes;
 
   factory TokenRes.fromJson(Map<String, dynamic> json) =>
@@ -17,16 +19,16 @@ class TokenRes with _$TokenRes {
 }
 
 @freezed
-class Data with _$Data {
-  const factory Data({
+class Token with _$Token {
+  const factory Token({
     required String accessToken,
     required String refreshToken,
     required User user,
     required String lastLoginDateTime,
     required String? message,
-  }) = _Data;
+  }) = _Token;
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory Token.fromJson(Map<String, dynamic> json) => _$TokenFromJson(json);
 }
 
 @freezed

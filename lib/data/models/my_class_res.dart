@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 import 'meta.dart';
 
@@ -7,6 +8,7 @@ part 'my_class_res.g.dart';
 
 @freezed
 class MyClassRes with _$MyClassRes {
+  @JsonSerializable(explicitToJson: true)
   const factory MyClassRes({
     required Meta meta,
     required List<MyClass>? data,

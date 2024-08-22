@@ -1,15 +1,18 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter/foundation.dart';
 
 import 'meta.dart';
 
 part 'app_version_res.freezed.dart';
+
 part 'app_version_res.g.dart';
 
 @freezed
 class AppVersionRes with _$AppVersionRes {
+  @JsonSerializable(explicitToJson: true)
   const factory AppVersionRes({
     required Meta meta,
-    required Data? data,
+    required AppVersion? data,
   }) = _AppVersionRes;
 
   factory AppVersionRes.fromJson(Map<String, dynamic> json) =>
@@ -17,14 +20,15 @@ class AppVersionRes with _$AppVersionRes {
 }
 
 @freezed
-class Data with _$Data {
-  const factory Data({
+class AppVersion with _$AppVersion {
+  const factory AppVersion({
     required int serviceType,
     required int deviceType,
     required String version,
     required String minVersion,
     required String reviewVersion,
-  }) = _Data;
+  }) = _AppVersion;
 
-  factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
+  factory AppVersion.fromJson(Map<String, dynamic> json) =>
+      _$AppVersionFromJson(json);
 }
