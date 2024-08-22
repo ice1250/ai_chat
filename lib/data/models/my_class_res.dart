@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'meta.dart';
 
 part 'my_class_res.freezed.dart';
+
 part 'my_class_res.g.dart';
 
 @freezed
@@ -29,5 +30,6 @@ class MyClass with _$MyClass {
     required String closeDate,
   }) = _MyClass;
 
-  factory MyClass.fromJson(Map<String, dynamic> json) => _$MyClassFromJson(json);
+  factory MyClass.fromJson(Map<String, dynamic> json) =>
+      _$MyClassFromJson(json);
 }

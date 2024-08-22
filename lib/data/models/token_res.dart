@@ -8,6 +8,7 @@ part 'token_res.g.dart';
 
 @freezed
 class TokenRes with _$TokenRes {
+
   @JsonSerializable(explicitToJson: true)
   const factory TokenRes({
     required Meta meta,
